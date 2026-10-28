@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A Última Luz — Crônicas da Noite Eterna. Beat 'em up de fantasia sombria em estilo 16 bits, jogável offline.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#050407">
+  <title>A Última Luz — Crônicas da Noite Eterna</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-state="MENU">
+  <main id="stage">
+    <div id="frame">
+      <canvas id="game" width="320" height="180" aria-label="Arena do jogo" role="img"></canvas>
+
+      <div id="ui">
+        <div id="sr-live" class="sr" aria-live="polite"></div>
+
+        <!-- ===== MENU PRINCIPAL ===== -->
+        <section id="screen-menu" class="screen screen-title" aria-labelledby="logo" hidden>
+          <div class="title-block">
+            <h1 id="logo" data-px="9" data-grad="#fff4dc,#e2b870,#c8202e" data-shadow="#2a0508">A Última Luz</h1>
+            <p data-px="4" data-color="#e04050" data-shadow="#1a0206">Crônicas da Noite Eterna</p>
+          </div>
+          <nav class="window menu-list" aria-label="Menu principal">
+            <button id="btn-continue" type="button" data-px="3" hidden>Continuar</button>
+            <button id="btn-new" type="button" data-px="3">Nova campanha</button>
+            <button id="btn-controls" type="button" data-px="3">Controles</button>
+            <button id="btn-audio" type="button" data-px="3">Áudio</button>
+            <button id="btn-erase" type="button" data-px="3" data-color="#ff8a94">Apagar progresso</button>
+          </nav>
+          <p id="menu-best" data-px="2" data-color="#b8b0c8">Nenhuma vitória registrada ainda.</p>
+          <p id="menu-storage" data-px="2" data-color="#ff8a94" hidden>Salvamento indisponível neste navegador.</p>
+          <p data-px="2" data-color="#6a6080">↑↓ navegar · Enter confirmar · M som</p>
+        </section>
+
+        <!-- ===== ÁUDIO ===== -->
+        <section id="screen-audio" class="screen window panel" aria-labelledby="title-audio" hidden>
+          <h2 id="title-audio" data-px="5" data-color="#e2b870">Áudio</h2>
+          <label class="range-row" for="vol-menu"><span data-px="3" data-align="left">Volume</span> <output id="vol-menu-out" data-px="3" data-color="#e2b870">70</output>
+            <input id="vol-menu" class="vol" type="range" min="0" max="100" step="5" value="70">
+          </label>
+          <button id="btn-mute-menu" class="btn-mute" type="button" data-px="3" aria-pressed="false">Som: ligado</button>
+          <button id="btn-ambient" type="button" data-px="3" aria-pressed="true">Ambiente: ligado</button>
+          <p id="audio-status" data-px="2" data-color="#9a90a8" data-wrap="420"></p>
+          <button id="btn-audio-back" type="button" data-px="3">Voltar</button>
+        </section>
+
+        <!-- ===== CONFIRMAÇÃO ===== -->
+        <section id="screen-confirm" class="screen window panel" aria-labelledby="title-confirm" role="alertdialog" hidden>
+          <h2 id="title-confirm" data-px="5" data-color="#ff8a94">Apagar progresso?</h2>
+          <p data-px="2" data-color="#b8b0c8" data-wrap="430">Remove o ponto de retorno, o recorde e os registros. As preferências de áudio ficam.</p>
+          <button id="btn-erase-no" type="button" data-px="3">Não, manter</button>
+          <button id="btn-erase-yes" type="button" data-px="3" data-color="#ff8a94">Sim, apagar tudo</button>
+        </section>
+
+        <!-- ===== CONTROLES ===== -->
+        <section id="screen-controls" class="screen window panel wide" aria-labelledby="title-controls" hidden>
+          <h2 id="title-controls" data-px="5" data-color="#e2b870">Controles e técnicas</h2>
+          <div class="controls-grid">
+            <ul class="keys" aria-label="Teclas">
+              <li><span class="key" data-px="2">WASD/Setas</span><span data-px="2" data-color="#b8b0c8" data-align="left">Mover</span></li>
+              <li><span class="key" data-px="2">J</span><span data-px="2" data-color="#b8b0c8" data-align="left">Ataque leve (combo de 3)</span></li>
+              <li><span class="key" data-px="2">K</span><span data-px="2" data-color="#b8b0c8" data-align="left">Ataque pesado</span></li>
+              <li><span class="key" data-px="2">L</span><span data-px="2" data-color="#b8b0c8" data-align="left">Esquiva</span></li>
+              <li><span class="key" data-px="2">I</span><span data-px="2" data-color="#b8b0c8" data-align="left">Aparar</span></li>
+              <li><span class="key" data-px="2">O</span><span data-px="2" data-color="#b8b0c8" data-align="left">Rito de Sangue (50)</span></li>
+              <li><span class="key" data-px="2">Enter</span><span data-px="2" data-color="#b8b0c8" data-align="left">Confirmar / pular</span></li>
+              <li><span class="key" data-px="2">Esc</span><span data-px="2" data-color="#b8b0c8" data-align="left">Pausar / voltar</span></li>
+              <li><span class="key" data-px="2">R</span><span data-px="2" data-color="#b8b0c8" data-align="left">Reiniciar no fim</span></li>
+              <li><span class="key" data-px="2">M</span><span data-px="2" data-color="#b8b0c8" data-align="left">Som liga/desliga</span></li>
+            </ul>
+            <ul class="tips">
+              <li data-px="2" data-wrap="480" data-align="left" data-color="#efe6d4">Combo: aperte J durante o golpe para encadear 3 cortes. K no meio do combo finaliza com golpe pesado.</li>
+              <li data-px="2" data-wrap="480" data-align="left" data-color="#efe6d4">Telegráfico: brilho branco na arma e área pontilhada no chão avisam o golpe inimigo.</li>
+              <li data-px="2" data-wrap="480" data-align="left" data-color="#f3dfae">Aparo perfeito: I logo antes do impacto. Anula o dano, atordoa, dá 20 de sangue e +50% no contra-ataque.</li>
+              <li data-px="2" data-wrap="480" data-align="left" data-color="#efe6d4">Aparo tardio: bloqueia parte do dano, sem atordoar.</li>
+              <li data-px="2" data-wrap="480" data-align="left" data-color="#ff8a94">Carmesim (!): golpes vermelhos não podem ser aparados. Esquive com L.</li>
+              <li data-px="2" data-wrap="480" data-align="left" data-color="#efe6d4">Inimigos atordoados recebem +35% de dano.</li>
+            </ul>
+          </div>
+          <button id="btn-controls-back" type="button" data-px="3">Voltar</button>
+        </section>
+
+        <!-- ===== PAUSA ===== -->
+        <section id="screen-pause" class="screen window panel" aria-labelledby="title-pause" hidden>
+          <h2 id="title-pause" data-px="5" data-color="#e2b870">Pausa</h2>
+          <button id="btn-resume" type="button" data-px="3">Retomar</button>
+          <button id="btn-pause-controls" type="button" data-px="3">Controles</button>
+          <label class="range-row" for="vol-pause"><span data-px="3" data-align="left">Volume</span> <output id="vol-pause-out" data-px="3" data-color="#e2b870">70</output>
+            <input id="vol-pause" class="vol" type="range" min="0" max="100" step="5" value="70">
+          </label>
+          <button id="btn-mute-pause" class="btn-mute" type="button" data-px="3" aria-pressed="false">Som: ligado</button>
+          <button id="btn-quit" type="button" data-px="3" data-color="#ff8a94">Voltar ao menu</button>
+          <p data-px="2" data-color="#6a6080">Ao voltar, a onda atual recomeça.</p>
+        </section>
+
+        <!-- ===== MELHORIAS ===== -->
+        <section id="screen-upgrade" class="screen panel-free wide" aria-labelledby="title-upgrade" hidden>
+          <h2 id="title-upgrade" data-px="6" data-grad="#fff4dc,#e2b870,#a8742a" data-shadow="#1a1004">A chama responde</h2>
+          <p id="upgrade-sub" data-px="2" data-color="#cfc6d8">Escolha uma bênção.</p>
+          <div class="cards">
+            <button type="button" class="card window" data-upgrade="blade"><span data-px="3" data-color="#9a90a8">1</span><b data-px="3" data-color="#f3dfae">Lâmina Afiada</b><span class="desc" data-px="2" data-wrap="250" data-color="#cfc6d8"></span><span class="stack" data-px="2" data-color="#e2b870"></span></button>
+            <button type="button" class="card window" data-upgrade="vigor"><span data-px="3" data-color="#9a90a8">2</span><b data-px="3" data-color="#f3dfae">Vigor Sombrio</b><span class="desc" data-px="2" data-wrap="250" data-color="#cfc6d8"></span><span class="stack" data-px="2" data-color="#e2b870"></span></button>
+            <button type="button" class="card window" data-upgrade="discipline"><span data-px="3" data-color="#9a90a8">3</span><b data-px="3" data-color="#f3dfae">Disciplina de Sangue</b><span class="desc" data-px="2" data-wrap="250" data-color="#cfc6d8"></span><span class="stack" data-px="2" data-color="#e2b870"></span></button>
+          </div>
+        </section>
+
+        <!-- ===== VITÓRIA ===== -->
+        <section id="screen-victory" class="screen window panel result" aria-labelledby="title-victory" hidden>
+          <h2 id="title-victory" data-px="6" data-grad="#fff4dc,#e2b870,#a8742a" data-shadow="#1a1004">A Luz Persiste</h2>
+          <p id="vic-boss" data-px="2" data-color="#cfc6d8" data-wrap="560"></p>
+          <ul id="vic-summary" class="summary"></ul>
+          <p id="vic-record" class="record" data-px="3" data-color="#e2b870" hidden>Novo recorde!</p>
+          <button id="btn-vic-again" type="button" data-px="3">Nova campanha (R)</button>
+          <button id="btn-vic-menu" type="button" data-px="3">Menu principal</button>
+        </section>
+
+        <!-- ===== DERROTA ===== -->
+        <section id="screen-gameover" class="screen window panel result" aria-labelledby="title-gameover" hidden>
+          <h2 id="title-gameover" data-px="6" data-color="#ff5060" data-shadow="#2a0508">Fim de jogo</h2>
+          <p data-px="2" data-color="#cfc6d8" data-wrap="560">O Guardião tomba sobre as pedras frias. Mas a chama ainda tremula...</p>
+          <ul id="go-summary" class="summary"></ul>
+          <button id="btn-retry" type="button" data-px="3">Tentar de novo (R)</button>
+          <button id="btn-go-menu" type="button" data-px="3">Menu principal</button>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="fatal" role="alert" hidden></div>
+  <noscript><div class="noscript">Este jogo precisa de JavaScript habilitado.</div></noscript>
+  <script src="game.js"></script>
+</body>
+</html>
